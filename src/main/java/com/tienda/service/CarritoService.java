@@ -1,76 +1,111 @@
 package com.tienda.service;
 
-import org.springframework.stereotype.Service;
-
+import com.tienda.domain.Producto;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CarritoService {
 
-    // Simula carrito en memoria (productoId → cantidad)
-    private Map<Long, Integer> carrito = new HashMap<>();
+    @Autowired
+    private ProductoService productoService;
 
-    // 👉 AGREGA PRODUCTO
-    public void agregarProducto(Long productoId, int cantidad) {
-        carrito.merge(productoId, cantidad, Integer::sum);
+    @SuppressWarnings("unchecked")
+    private Map<Long, Integer> obtenerCarritoSession(HttpSession session) {
+        Map<Long, Integer> carrito = (Map<Long, Integer>) session.getAttribute("carrito");
+
+        if (carrito == null) {
+            carrito = new HashMap<>();
+            session.setAttribute("carrito", carrito);
+        }
+
+        return carrito;
     }
 
-    // 👉 LISTA DE ITEMS PARA LA VISTA
-    public List<ItemCarrito> obtenerItems() {
+    public void agregarProducto(Long productoId, int cantidad, HttpSession session) {
+        Map<Long, Integer> carrito = obtenerCarritoSession(session);
+        carrito.merge(productoId, cantidad, Integer::sum);
+        session.setAttribute("carrito", carrito);
+        session.setAttribute("cantidadCarrito", obtenerCantidadTotal(session));
+    }
 
+    public List<ItemCarrito> obtenerItems(HttpSession session) {
+        Map<Long, Integer> carrito = obtenerCarritoSession(session);
         List<ItemCarrito> items = new ArrayList<>();
 
         for (Map.Entry<Long, Integer> entry : carrito.entrySet()) {
-
             Long productoId = entry.getKey();
             int cantidad = entry.getValue();
 
-            // 🔹 Simulación de productos (luego BD)
-            String nombre = "Producto #" + productoId;
-            double precio = obtenerPrecio(productoId);
+            Producto producto = productoService.getProductoPorId(productoId);
 
-             ItemCarrito item = new ItemCarrito(
-                    productoId,
-                    nombre,
-                    precio,
-                    cantidad
-            );
-
-            items.add(item);
+            if (producto != null) {
+                ItemCarrito item = new ItemCarrito(
+                        producto.getIdProducto(),
+                        producto.getNombre(),
+                        producto.getPrecio(),
+                        cantidad,
+                        producto.getRutaImagen(),
+                        producto.getStock()
+                );
+                items.add(item);
+            }
         }
 
         return items;
     }
 
-    // 👉 TOTAL DEL CARRITO
-    public double obtenerTotal() {
-        return obtenerItems().stream()
-                .mapToDouble(i -> i.getPrecio() * i.getCantidad())
+    public double obtenerTotal(HttpSession session) {
+        return obtenerItems(session).stream()
+                .mapToDouble(ItemCarrito::getSubtotal)
                 .sum();
     }
 
-    // 👉 SIMULA PRECIOS
-    private double obtenerPrecio(Long productoId) {
-        return switch (productoId.intValue()) {
-            case 101 -> 315000;
-            case 102 -> 420000;
-            case 103 -> 1250000;
-            case 104 -> 720000;
-            case 105 -> 530000;
-            case 106 -> 595000;
-            default -> 100000;
-        };
+    public int obtenerCantidadTotal(HttpSession session) {
+        return obtenerItems(session).stream()
+                .mapToInt(ItemCarrito::getCantidad)
+                .sum();
     }
 
-    // 👉 LIMPIAR CARRITO (checkout)
-    public void limpiar() {
-        carrito.clear();
+    public boolean finalizarCompra(HttpSession session) {
+        List<ItemCarrito> items = obtenerItems(session);
+
+        for (ItemCarrito item : items) {
+            Producto producto = productoService.getProductoPorId(item.getProductoId());
+
+            if (producto == null || producto.getStock() < item.getCantidad()) {
+                return false;
+            }
+        }
+
+        for (ItemCarrito item : items) {
+            Producto producto = productoService.getProductoPorId(item.getProductoId());
+
+            int nuevoStock = producto.getStock() - item.getCantidad();
+            producto.setStock(nuevoStock);
+
+            productoService.save(producto);
+        }
+
+        limpiar(session);
+
+        return true;
     }
 
-    public Object getCarrito() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void eliminarProducto(Long productoId, HttpSession session) {
+        Map<Long, Integer> carrito = obtenerCarritoSession(session);
+        carrito.remove(productoId);
+        session.setAttribute("carrito", carrito);
+        session.setAttribute("cantidadCarrito", obtenerCantidadTotal(session));
+    }
+
+    public void limpiar(HttpSession session) {
+        session.removeAttribute("carrito");
+        session.setAttribute("cantidadCarrito", 0);
     }
 }

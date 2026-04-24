@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout/plantilla :: head}">
+    <title>Producto | Salchi & Friends</title>
+</head>
+
+<body>
+
+<header th:replace="~{layout/plantilla :: header}"></header>
+
+<main class="py-5">
+    <div class="container">
+        <div class="row align-items-center g-5">
+
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="p-4 text-center">
+                        <img th:src="${producto.rutaImagen}" th:alt="${producto.nombre}"
+                             class="img-fluid rounded" style="max-height: 420px;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <h2 class="fw-bold mb-3" th:text="${producto.nombre}"></h2>
+                <p class="mb-3" th:text="${producto.descripcion}"></p>
+
+                <p class="fs-4 fw-bold text-success mb-2">
+                    ₡<span th:text="${#numbers.formatDecimal(producto.precio, 1, 'COMMA', 0, 'POINT')}"></span>
+                </p>
+
+                <p class="mb-4">
+                    <strong>Stock disponible:</strong>
+                    <span th:text="${producto.stock}"></span>
+                </p>
+
+                <form th:action="@{/carrito/agregar}" method="post" class="mb-3">
+                    <input type="hidden" name="productoId" th:value="${producto.idProducto}">
+                    <input type="hidden" name="origen" th:value="${'detalle/' + producto.idProducto}">
+
+                    <div class="row g-2 align-items-center">
+                        <div class="col-auto">
+                            <label class="form-label mb-0">Cantidad</label>
+                        </div>
+                        <div class="col-3">
+                            <input type="number" name="cantidad" value="1" min="1" class="form-control" required>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <button type="submit" class="btn btn-warning px-4">
+                                Agregar al carrito
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <a th:href="@{/index}" class="btn btn-outline-secondary">Volver al inicio</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{layout/plantilla :: footer}"></footer>
+
+</body>
+</html>

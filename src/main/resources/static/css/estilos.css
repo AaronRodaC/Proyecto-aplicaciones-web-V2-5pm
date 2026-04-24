@@ -28,12 +28,17 @@ body {
     margin-bottom: 0;
 }
 
-/* NAVBAR */
 .navbar-salchi {
     background: linear-gradient(90deg, #171b22, #1f2730);
     padding: 10px 0;
 }
-
+.img-producto {
+    width: 100%;
+    height: 220px;         
+    object-fit: cover;      
+    object-position: center; 
+    border-radius: 10px;
+}
 .logo-navbar {
     width: 170px;
     height: auto;

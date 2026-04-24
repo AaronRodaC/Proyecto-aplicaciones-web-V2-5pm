@@ -1,152 +1,234 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
+<html xmlns:th="http://www.thymeleaf.org">
 
-    <head th:replace="~{layout/plantilla :: head}">
-        <title>Alimentos | Salchi & Friends</title>
-    </head>
+<head th:replace="~{layout/plantilla :: head}">
+    <title>Categoría</title>
+</head>
 
-    <body>
+<body>
 
-        <header th:replace="~{layout/plantilla :: header}"></header>
+<header th:replace="~{layout/plantilla :: header}"></header>
 
-        <main class="pagina-inicio py-5">
-            <div class="container">
+<main class="py-5">
+    <div class="container">
 
-                <!-- TITULO -->
-                <section class="hero-prototipo text-center mb-5">
-                    <h2 class="titulo-seccion">Alimentos</h2>
-                    <p class="subtitulo-seccion">
-                        Nutrición balanceada y saludable para el bienestar de tus mascotas
-                    </p>
-                </section>
+        <h2 class="text-center" th:text="${tituloCategoria}"></h2>
+        <p class="text-center" th:text="${subtituloCategoria}"></p>
 
-                <!-- PRODUCTOS -->
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+        <div class="row g-4 mt-4">
 
-                    <!-- PRODUCTO 1 -->
-                    <div class="col">
-                        <div class="card tarjeta-producto h-100">
+            <div class="col-md-3" th:each="p : ${productos}">
+                <div class="card tarjeta-producto h-100">
 
-                            <div class="contenedor-imagen">
-                                <img th:src="@{/img/Alimento_perro1.png}"
-                                     class="img-producto"
-                                     alt="Alimento para perro"/>
-                            </div>
-
-                            <div class="card-body d-flex flex-column">
-
-                                <h5 class="titulo-producto">Alimento premium perro</h5>
-
-                                <p class="descripcion-producto">
-                                    Fórmula balanceada para perros adultos con nutrientes esenciales.
-                                </p>
-
-                                <p class="precio-producto">₡18 900</p>
-
-                                <a th:href="@{/producto/detalle/31}"
-                                   class="btn btn-vermas mt-auto">
-                                    Ver más
-                                </a>
-
-                            </div>
-                        </div>
+                    <div class="contenedor-imagen">
+                        <img th:src="${p.rutaImagen}"
+                             th:alt="${p.nombre}"
+                             class="img-producto">
                     </div>
 
-                    <!-- PRODUCTO 2 -->
-                    <div class="col">
-                        <div class="card tarjeta-producto h-100">
+                    <div class="card-body d-flex flex-column">
 
-                            <div class="contenedor-imagen">
-                                <img th:src="@{/img/Alimento_perro_mimados.png}"
-                                     class="img-producto"
-                                     alt="Alimento para gato"/>
-                            </div>
+                        <h5 th:text="${p.nombre}"></h5>
 
-                            <div class="card-body d-flex flex-column">
+                        <p th:text="${p.descripcion}"></p>
 
-                                <h5 class="titulo-producto">Alimento premium perro</h5>
+                        <p class="fw-bold">
+                            ₡<span th:text="${p.precio}"></span>
+                        </p>
 
-                                <p class="descripcion-producto">
-                                    Nutrición completa diseñada para perros de todas las edades.
-                                </p>
+                        <div class="mt-auto">
 
-                                <p class="precio-producto">₡12 500</p>
+                            <a th:href="@{/producto/{id}(id=${p.idProducto})}"
+                               class="btn btn-primary w-100 mb-2">
+                                Ver más
+                            </a>
 
-                                <a th:href="@{/producto/detalle/32}"
-                                   class="btn btn-vermas mt-auto">
-                                    Ver más
-                                </a>
+                            <form th:action="@{/carrito/agregar}" method="post">
+                                <input type="hidden" name="productoId" th:value="${p.idProducto}">
+                                <input type="hidden" name="cantidad" value="1">
+                                <input type="hidden" name="origen" th:value="${#strings.toLowerCase(tituloCategoria)}">
 
-                            </div>
+                                <button type="submit" class="btn btn-warning w-100">
+                                    Agregar al carrito
+                                </button>
+                            </form>
+
                         </div>
+
                     </div>
+                </div>
+            </div>
 
-                    <!-- PRODUCTO 3 -->
-                    <div class="col">
-                        <div class="card tarjeta-producto h-100">
+        </div>
 
-                            <div class="contenedor-imagen">
-                                <img th:src="@{/img/Alimento_gato1.png}"
-                                     class="img-producto"
-                                     alt="Alimento gatito"/>
+        <div th:if="${esAdmin}" class="mt-5">
+
+            <hr>
+            <h3>Panel Admin</h3>
+
+            <div class="card mb-4">
+                <div class="card-body">
+
+                    <h5>Agregar producto</h5>
+
+                    <form th:action="@{/producto/guardar}" method="post">
+
+                        <input type="hidden" name="categoria" th:value="${categoriaActual}">
+
+                        <div class="row g-2">
+
+                            <div class="col-md-6">
+                                <input class="form-control" name="nombre" placeholder="Nombre" required>
                             </div>
 
-                            <div class="card-body d-flex flex-column">
-
-                                <h5 class="titulo-producto">Alimento para gatitos</h5>
-
-                                <p class="descripcion-producto">
-                                    Especialmente formulado para el crecimiento saludable.
-                                </p>
-
-                                <p class="precio-producto">₡14 800</p>
-
-                                <a th:href="@{/producto/detalle/33}"
-                                   class="btn btn-vermas mt-auto">
-                                    Ver más
-                                </a>
-
+                            <div class="col-md-3">
+                                <input class="form-control" name="precio" placeholder="Precio" type="number" required>
                             </div>
+
+                            <div class="col-md-3">
+                                <input class="form-control" name="stock" placeholder="Stock" type="number" required>
+                            </div>
+
+                            <div class="col-12">
+                                <input class="form-control" name="rutaImagen" placeholder="Imagen URL" required>
+                            </div>
+
+                            <div class="col-12">
+                                <input class="form-control" name="descripcion" placeholder="Descripción" required>
+                            </div>
+
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-success">
+                                    Agregar
+                                </button>
+                            </div>
+
                         </div>
-                    </div>
 
-                    <!-- PRODUCTO 4 -->
-                    <div class="col">
-                        <div class="card tarjeta-producto h-100">
-
-                            <div class="contenedor-imagen">
-                                <img th:src="@{/img/Alimento_gato_purina.png}"
-                                     class="img-producto"
-                                     alt="Alimento natural"/>
-                            </div>
-
-                            <div class="card-body d-flex flex-column">
-
-                                <h5 class="titulo-producto">Alimento para gato purina</h5>
-
-                                <p class="descripcion-producto">
-                                    Alimento balanceado completo húmedo para gatos adultos de todas las razas con actividad normal.
-                                </p>
-
-                                <p class="precio-producto">₡17 400</p>
-
-                                <a th:href="@{/producto/detalle/34}"
-                                   class="btn btn-vermas mt-auto">
-                                    Ver más
-                                </a>
-
-                            </div>
-                        </div>
-                    </div>
+                    </form>
 
                 </div>
-
             </div>
-        </main>
 
-        <footer th:replace="~{layout/plantilla :: footer}"></footer>
+            <div class="table-responsive">
+                <table class="table table-bordered text-center align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Imagen</th>
+                            <th>Nombre</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Modificar</th>
+                            <th>Eliminar</th>
+                        </tr>
+                    </thead>
 
-    </body>
+                    <tbody>
+
+                        <th:block th:each="p : ${productosAdmin}">
+
+                            <tr>
+                                <td th:text="${p.idProducto}"></td>
+
+                                <td>
+                                    <img th:src="${p.rutaImagen}"
+                                         th:alt="${p.nombre}"
+                                         style="width:70px; height:70px; object-fit:cover;">
+                                </td>
+
+                                <td th:text="${p.nombre}"></td>
+
+                                <td>
+                                    ₡<span th:text="${p.precio}"></span>
+                                </td>
+
+                                <td th:text="${p.stock}"></td>
+
+                                <td>
+                                    <button type="button"
+                                            class="btn btn-primary btn-sm"
+                                            data-bs-toggle="collapse"
+                                            th:attr="data-bs-target='#edit' + ${p.idProducto}, aria-controls='edit' + ${p.idProducto}">
+                                        Editar
+                                    </button>
+                                </td>
+
+                                <td>
+                                    <a th:href="@{/producto/eliminar/{id}(id=${p.idProducto})}"
+                                       class="btn btn-danger btn-sm"
+                                       onclick="return confirm('¿Eliminar producto?')">
+                                        X
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="7" class="p-0">
+
+                                    <div class="collapse p-3 bg-light"
+                                         th:id="'edit' + ${p.idProducto}">
+
+                                        <form th:action="@{/producto/actualizar}" method="post">
+
+                                            <input type="hidden" name="idProducto" th:value="${p.idProducto}">
+                                            <input type="hidden" name="categoria" th:value="${p.categoria}">
+
+                                            <div class="row g-2 text-start">
+
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Nombre</label>
+                                                    <input class="form-control" name="nombre" th:value="${p.nombre}" required>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Precio</label>
+                                                    <input class="form-control" name="precio" th:value="${p.precio}" type="number" required>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Stock</label>
+                                                    <input class="form-control" name="stock" th:value="${p.stock}" type="number" required>
+                                                </div>
+
+                                                <div class="col-12">
+                                                    <label class="form-label">Link de imagen</label>
+                                                    <input class="form-control" name="rutaImagen" th:value="${p.rutaImagen}" required>
+                                                </div>
+
+                                                <div class="col-12">
+                                                    <label class="form-label">Descripción</label>
+                                                    <textarea class="form-control" name="descripcion" rows="2" required
+                                                              th:text="${p.descripcion}"></textarea>
+                                                </div>
+
+                                                <div class="col-12">
+                                                    <button type="submit" class="btn btn-success mt-2">
+                                                        Guardar cambios
+                                                    </button>
+                                                </div>
+
+                                            </div>
+
+                                        </form>
+
+                                    </div>
+
+                                </td>
+                            </tr>
+
+                        </th:block>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+</main>
+
+<footer th:replace="~{layout/plantilla :: footer}"></footer>
+
+</body>
 </html>

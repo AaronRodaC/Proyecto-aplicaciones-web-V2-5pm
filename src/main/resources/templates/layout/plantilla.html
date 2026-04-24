@@ -1,129 +1,138 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
+      xmlns:th="http://www.thymeleaf.org">
 
-<head th:fragment="head">
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>Salchi&Friends</title>
+    <head th:fragment="head">
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>Salchi&Friends</title>
 
-    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/fav/favicon-16x16.png}"/>
-    <link rel="icon" type="image/png" sizes="32x32" th:href="@{/fav/favicon-32x32.png}"/>
+        <link rel="icon" type="image/png" sizes="16x16" th:href="@{/fav/favicon-16x16.png}"/>
+        <link rel="icon" type="image/png" sizes="32x32" th:href="@{/fav/favicon-32x32.png}"/>
 
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-    <link rel="stylesheet" th:href="@{/css/estilos.css}"/>
-</head>
+        <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+        <link rel="stylesheet" th:href="@{/css/estilos.css}"/>
+    </head>
 
-<body>
+    <body>
 
-<header th:fragment="header">
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-salchi">
-        <div class="container">
+        <header th:fragment="header">
+            <nav class="navbar navbar-expand-lg navbar-dark navbar-salchi">
+                <div class="container">
 
-            <a class="navbar-brand d-flex align-items-center" th:href="@{/}">
-                <img th:src="@{/img/salchi_logo_300x80.png}"
-                     alt="Salchi&Friends"
-                     class="logo-navbar"/>
-            </a>
-
-            <button class="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarCollapse"
-                    aria-controls="navbarCollapse"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/juguetes}">Juguetes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/snacks}">Snacks</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/ropa}">Ropa</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/alimentos}">Alimentos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/contactanos}">Contactanos</a>
-                    </li>
-                </ul>
-
-                <form class="d-flex me-3 buscador-navbar" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Buscar"/>
-                    <button class="btn btn-outline-light" type="submit">Buscar</button>
-                </form>
-
-                <div class="d-flex align-items-center gap-2 iconos-navbar">
-
-                    <a class="btn btn-warning position-relative icono-btn"
-                       th:href="@{/carrito}"
-                       title="Carrito">
-                        <i class="fa-solid fa-cart-shopping"></i>
-                        <span id="cartCount"
-                              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            0
-                        </span>
+                    <a class="navbar-brand d-flex align-items-center" th:href="@{/}">
+                        <img th:src="@{/img/salchi_logo_300x80.png}"
+                             alt="Salchi&Friends"
+                             class="logo-navbar"/>
                     </a>
 
-                    <a class="btn btn-info text-white icono-btn"
-                       href="mailto:salchiandfriends.soporte@gmail.com"
-                       title="Correo">
-                        <i class="fa-solid fa-envelope"></i>
-                    </a>
+                    <button class="navbar-toggler"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#navbarCollapse"
+                            aria-controls="navbarCollapse"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
 
-                    <a class="btn btn-outline-light icono-btn"
-                       th:href="@{/login}"
-                       sec:authorize="!isAuthenticated()"
-                       title="Iniciar sesión">
-                        <i class="fa-solid fa-right-to-bracket"></i>
-                    </a>
+                    <div class="collapse navbar-collapse" id="navbarCollapse">
 
-                    <a class="btn btn-primary icono-btn"
-                       th:href="@{/registro}"
-                       sec:authorize="!isAuthenticated()"
-                       title="Registrarse">
-                        <i class="fa-solid fa-user-plus"></i>
-                    </a>
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/juguetes}">Juguetes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/snacks}">Snacks</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/ropa}">Ropa</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/alimentos}">Alimentos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/contactanos}">Contactanos</a>
+                            </li>
+                        </ul>
 
+                        <form class="d-flex me-3 buscador-navbar"
+                              th:action="@{/buscar}"
+                              method="get"
+                              role="search">
+
+                            <input class="form-control me-2"
+                                   type="search"
+                                   name="texto"
+                                   placeholder="Buscar"
+                                   aria-label="Buscar"
+                                   required>
+
+                                <button class="btn btn-outline-light" type="submit">
+                                    Buscar
+                                </button>
+                        </form>
+
+                        <div class="d-flex align-items-center gap-2 iconos-navbar">
+
+                            <a class="btn btn-warning position-relative icono-btn"
+                               th:href="@{/carrito}"
+                               title="Carrito">
+                                <i class="fa-solid fa-cart-shopping"></i>
+
+                                <span id="cartCount"
+                                      class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                      th:text="${session.cantidadCarrito != null ? session.cantidadCarrito : 0}">
+                                    0
+                                </span>
+                            </a>
+
+                            <a class="btn btn-info text-white icono-btn"
+                               href="mailto:salchiandfriends.soporte@gmail.com"
+                               title="Correo">
+                                <i class="fa-solid fa-envelope"></i>
+                            </a>
+
+                            <div th:if="${session.usuarioLogueado == null}" class="d-flex align-items-center gap-2">
+                                <a class="btn btn-outline-light icono-btn"
+                                   th:href="@{/login}"
+                                   title="Iniciar sesión">
+                                    <i class="fa-solid fa-right-to-bracket"></i>
+                                </a>
+
+                                <a class="btn btn-primary icono-btn"
+                                   th:href="@{/registro}"
+                                   title="Registrarse">
+                                    <i class="fa-solid fa-user-plus"></i>
+                                </a>
+                            </div>
+
+                            <div th:if="${session.usuarioLogueado != null}" class="d-flex align-items-center gap-2">
+                                <span class="text-white">
+                                    Bienvenido, <strong th:text="${session.usuarioLogueado}"></strong>
+                                </span>
+
+                                <a class="btn btn-danger icono-btn"
+                                   th:href="@{/logout}"
+                                   title="Cerrar sesión">
+                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
+            </nav>
+        </header>
+        <footer th:fragment="footer">
+            <div class="bg-dark text-white text-center p-3 mt-5">
+                © Salchi&Friends - Derechos reservados
             </div>
-        </div>
-    </nav>
-</header>
 
-<footer th:fragment="footer">
-    <div class="footer-salchi">
-        <div class="container text-center">
-            © Salchi&Friends — Todos los derechos reservados
-        </div>
-    </div>
-</footer>
+            <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+        </footer>
 
-<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
-<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
-
-<script>
-    let cartCount = 0;
-
-    function agregarAlCarrito() {
-        cartCount++;
-        const cart = document.getElementById("cartCount");
-        if (cart) {
-            cart.innerText = cartCount;
-        }
-    }
-</script>
-
-</body>
+    </body>
 </html>
