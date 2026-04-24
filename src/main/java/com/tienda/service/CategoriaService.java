@@ -14,17 +14,14 @@ import com.tienda.repository.CategoriaRepository;
 
 @Service
 public class CategoriaService {
-    //se usa para crear automaticamente una unica instacia de esta clase
     
     @Autowired
     private CategoriaRepository categoriaRepository;
-    // se usa para indicar que se hara una transaccion a una bd... de solo lectura
     @Transactional(readOnly=true)
     public List<Categoria> getCategorias(boolean activos){
-        //se usa "activos" si se 
         var lista=categoriaRepository.findAll();
         
-        if (activos) {// si solo se quieren los registros de categorias activas 
+        if (activos) {
             lista.removeIf(e -> !e.isActivo());
         }
         
@@ -36,8 +33,4 @@ public class CategoriaService {
     public void save(Categoria categoria){
        categoriaRepository.save(categoria);
         }
-    
-           
-    
-    
 }

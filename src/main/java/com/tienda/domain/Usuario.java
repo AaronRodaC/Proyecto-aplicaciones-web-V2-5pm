@@ -1,57 +1,24 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.tienda.domain;
 
-public class Usuario {
+import jakarta.persistence.*;
+import java.io.Serializable;
+import lombok.Data;
+
+@Data
+@Entity
+@Table(name = "usuario")
+public class Usuario implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idUsuario;
 
     private String username;
     private String nombre;
     private String correo;
     private String password;
-    private String confirmarPassword; // <- lo pide el HTML
-
-    public Usuario() {
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getCorreo() {
-        return correo;
-    }
-
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getConfirmarPassword() {
-        return confirmarPassword;
-    }
-
-    public void setConfirmarPassword(String confirmarPassword) {
-        this.confirmarPassword = confirmarPassword;
-    }
+    private String rol;
+    private boolean activo;
 }

@@ -1,85 +1,230 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{layout/plantilla :: head}">
-    <title>Snacks | Salchi & Friends</title>
+    <title>Categoría</title>
 </head>
 
 <body>
 
 <header th:replace="~{layout/plantilla :: header}"></header>
 
-<main class="pagina-inicio py-5">
+<main class="py-5">
     <div class="container">
 
-        <section class="hero-prototipo text-center mb-5">
-            <h2 class="titulo-seccion">Snacks</h2>
-            <p class="subtitulo-seccion">
-                Premios y bocaditos deliciosos para consentir a tus mascotas
-            </p>
-        </section>
+        <h2 class="text-center" th:text="${tituloCategoria}"></h2>
+        <p class="text-center" th:text="${subtituloCategoria}"></p>
 
-        <div class="row g-4 justify-content-center">
+        <div class="row g-4 mt-4">
 
-            <div class="col-12 col-sm-6 col-lg-3">
+            <div class="col-md-3" th:each="p : ${productos}">
                 <div class="card tarjeta-producto h-100">
-                    <div class="contenedor-imagen">
-                        <img th:src="@{/img/Snack_para_perros.png}" class="img-producto" alt="Snack 1"/>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="titulo-producto">Snack para perro</h5>
-                        <p class="descripcion-producto">Crujientes bocaditos por fuera y suaves por dentro, elaborado con manzanas, guisantes, zanahorias y mantequilla de maní. </p>
-                        <p class="precio-producto">₡3 500</p>
-                        <a th:href="@{/producto/detalle/5}" class="btn btn-vermas mt-auto">Ver más</a>
-                    </div>
-                </div>
-            </div>
 
-            <div class="col-12 col-sm-6 col-lg-3">
-                <div class="card tarjeta-producto h-100">
                     <div class="contenedor-imagen">
-                        <img th:src="@{/img/Snack_dental_perro.png}" class="img-producto" alt="Snack 2"/>
+                        <img th:src="${p.rutaImagen}"
+                             th:alt="${p.nombre}"
+                             class="img-producto">
                     </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="titulo-producto">Snack dental</h5>
-                        <p class="descripcion-producto">Delicioso bocadito crujiente perros.</p>
-                        <p class="precio-producto">₡4 200</p>
-                        <a th:href="@{/producto/detalle/6}" class="btn btn-vermas mt-auto">Ver más</a>
-                    </div>
-                </div>
-            </div>
 
-            <div class="col-12 col-sm-6 col-lg-3">
-                <div class="card tarjeta-producto h-100">
-                    <div class="contenedor-imagen">
-                        <img th:src="@{/img/Premios_gato1.png}" class="img-producto" alt="Producto 4"/>
-                    </div>
                     <div class="card-body d-flex flex-column">
-                        <h5 class="titulo-producto">Premios para gato</h5>
-                        <p class="descripcion-producto">Empanada rellena para gato.</p>
-                        <p class="precio-producto">₡6 750</p>
-                        <a th:href="@{/producto/detalle/4}" class="btn btn-vermas mt-auto">Ver más</a>
-                    </div>
-                </div>
-            </div>
 
-            <div class="col-12 col-sm-6 col-lg-3">
-                <div class="card tarjeta-producto h-100">
-                    <div class="contenedor-imagen">
-                        <img th:src="@{/img/Snack_gato_cremoso.png}" class="img-producto" alt="Snack 4"/>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="titulo-producto">Snack para gato</h5>
-                        <p class="descripcion-producto">Snack cremoso para gato.</p>
-                        <p class="precio-producto">₡3 900</p>
-                        <a th:href="@{/producto/detalle/8}" class="btn btn-vermas mt-auto">Ver más</a>
+                        <h5 th:text="${p.nombre}"></h5>
+
+                        <p th:text="${p.descripcion}"></p>
+
+                        <p class="fw-bold">
+                            ₡<span th:text="${p.precio}"></span>
+                        </p>
+
+                        <div class="mt-auto">
+
+                            <a th:href="@{/producto/{id}(id=${p.idProducto})}"
+                               class="btn btn-primary w-100 mb-2">
+                                Ver más
+                            </a>
+
+                            <form th:action="@{/carrito/agregar}" method="post">
+                                <input type="hidden" name="productoId" th:value="${p.idProducto}">
+                                <input type="hidden" name="cantidad" value="1">
+                                <input type="hidden" name="origen" th:value="${#strings.toLowerCase(tituloCategoria)}">
+
+                                <button type="submit" class="btn btn-warning w-100">
+                                    Agregar al carrito
+                                </button>
+                            </form>
+
+                        </div>
+
                     </div>
                 </div>
             </div>
 
         </div>
+
+        <div th:if="${esAdmin}" class="mt-5">
+
+            <hr>
+            <h3>Panel Admin</h3>
+
+            <div class="card mb-4">
+                <div class="card-body">
+
+                    <h5>Agregar producto</h5>
+
+                    <form th:action="@{/producto/guardar}" method="post">
+
+                        <input type="hidden" name="categoria" th:value="${categoriaActual}">
+
+                        <div class="row g-2">
+
+                            <div class="col-md-6">
+                                <input class="form-control" name="nombre" placeholder="Nombre" required>
+                            </div>
+
+                            <div class="col-md-3">
+                                <input class="form-control" name="precio" placeholder="Precio" type="number" required>
+                            </div>
+
+                            <div class="col-md-3">
+                                <input class="form-control" name="stock" placeholder="Stock" type="number" required>
+                            </div>
+
+                            <div class="col-12">
+                                <input class="form-control" name="rutaImagen" placeholder="Imagen URL" required>
+                            </div>
+
+                            <div class="col-12">
+                                <input class="form-control" name="descripcion" placeholder="Descripción" required>
+                            </div>
+
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-success">
+                                    Agregar
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered text-center align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Imagen</th>
+                            <th>Nombre</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Modificar</th>
+                            <th>Eliminar</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <th:block th:each="p : ${productosAdmin}">
+
+                            <tr>
+                                <td th:text="${p.idProducto}"></td>
+
+                                <td>
+                                    <img th:src="${p.rutaImagen}"
+                                         th:alt="${p.nombre}"
+                                         style="width:70px; height:70px; object-fit:cover;">
+                                </td>
+
+                                <td th:text="${p.nombre}"></td>
+
+                                <td>
+                                    ₡<span th:text="${p.precio}"></span>
+                                </td>
+
+                                <td th:text="${p.stock}"></td>
+
+                                <td>
+                                    <button type="button"
+                                            class="btn btn-primary btn-sm"
+                                            data-bs-toggle="collapse"
+                                            th:attr="data-bs-target='#edit' + ${p.idProducto}, aria-controls='edit' + ${p.idProducto}">
+                                        Editar
+                                    </button>
+                                </td>
+
+                                <td>
+                                    <a th:href="@{/producto/eliminar/{id}(id=${p.idProducto})}"
+                                       class="btn btn-danger btn-sm"
+                                       onclick="return confirm('¿Eliminar producto?')">
+                                        X
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="7" class="p-0">
+
+                                    <div class="collapse p-3 bg-light"
+                                         th:id="'edit' + ${p.idProducto}">
+
+                                        <form th:action="@{/producto/actualizar}" method="post">
+
+                                            <input type="hidden" name="idProducto" th:value="${p.idProducto}">
+                                            <input type="hidden" name="categoria" th:value="${p.categoria}">
+
+                                            <div class="row g-2 text-start">
+
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Nombre</label>
+                                                    <input class="form-control" name="nombre" th:value="${p.nombre}" required>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Precio</label>
+                                                    <input class="form-control" name="precio" th:value="${p.precio}" type="number" required>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Stock</label>
+                                                    <input class="form-control" name="stock" th:value="${p.stock}" type="number" required>
+                                                </div>
+
+                                                <div class="col-12">
+                                                    <label class="form-label">Link de imagen</label>
+                                                    <input class="form-control" name="rutaImagen" th:value="${p.rutaImagen}" required>
+                                                </div>
+
+                                                <div class="col-12">
+                                                    <label class="form-label">Descripción</label>
+                                                    <textarea class="form-control" name="descripcion" rows="2" required
+                                                              th:text="${p.descripcion}"></textarea>
+                                                </div>
+
+                                                <div class="col-12">
+                                                    <button type="submit" class="btn btn-success mt-2">
+                                                        Guardar cambios
+                                                    </button>
+                                                </div>
+
+                                            </div>
+
+                                        </form>
+
+                                    </div>
+
+                                </td>
+                            </tr>
+
+                        </th:block>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
     </div>
 </main>
 
